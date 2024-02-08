@@ -1,7 +1,38 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:push_notification_with_firebase_for_android_ios_web/UI/homePage.dart';
 
-void main() {
+Future<void> _firebaseMessagingBackgroundHandler(message) async {
+  await Firebase.initializeApp();
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+        apiKey: "AIzaSyCYfhO7puBuRoQ6QkS0v-_zff7xZGsujYM",
+        authDomain: "push-notification-for-all.firebaseapp.com",
+        projectId: "push-notification-for-all",
+        storageBucket: "push-notification-for-all.appspot.com",
+        messagingSenderId: "889737209675",
+        appId: "1:889737209675:web:f9a4b1675688dd6fac2ace",
+        measurementId: "G-VX21NHPXR7"),
+  );
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+      announcement: false,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false);
+  final token = await messaging.getToken(
+      vapidKey:
+          'BC-3kt57SiT5cdRqroQEjT5HVhdfh-0WYPrVDRFy6OxU3LZXccSXVhFE8DFXDXWk-5EUdezLCVm0oULmhpGB4p8');
+  print(token);
   runApp(const MyApp());
 }
 
